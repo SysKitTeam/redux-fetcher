@@ -12,11 +12,9 @@ export type Dictionary<V> = {
 export type Continuator = (response: Response) => Promise<any>;
 
 export interface IRequestActionOptions {
-    requestUrl: string;
-    requestActionName?: string;
-    requestActionPayload?: any;
-    responseActionName?: string;
-    errorActionName?: string;
+    url: string;
+    actionName?: string;
+    actionPayload?: any;
     requestInit?: RequestInit;
     jsonResponseExpected?: boolean;
     responsePayloadMapper?(payload: any);

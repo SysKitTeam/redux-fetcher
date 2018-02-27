@@ -4,11 +4,9 @@ import { IApiErrorResponse, Dictionary, Continuator, IRequestActionOptions } fro
 import { ignoreContinuator, allowContinuator } from './continuator';
 
 const defaultRequestActionOptions: IRequestActionOptions = {
-    requestUrl: '',
+    url: '',
     jsonResponseExpected: true,
-    requestActionName: '',
-    responseActionName: '',
-    errorActionName: '',
+    actionName: '',
     responsePayloadMapper: payload => payload,
     errorPayloadMapper: error => error
 };
@@ -34,22 +32,14 @@ class Fetcher {
         }
     }
 
-    public ignoreTemporaryRequests() {
-        const keys = Object.keys(this.temporaryRequests);
-        keys.forEach(key => {
-            // za svaki temp request u dictionariju svih requestova postavi da se mora ubit
-            this.ignoreRequest(key);
-            this.removeTempRequest(key);
-        });
-    }
+    public ignoreTemporaryRequests = () => Object.keys(this.temporaryRequests).forEach(key => {
+        this.ignoreRequest(key);
+        this.removeTempRequest(key);
+    })
 
-    private removeRequest(id: string) {
-        delete this.allRequests[id];
-    }
+    private removeRequest = (id: string) => delete this.allRequests[id];
 
-    private removeTempRequest(id: string) {
-        delete this.temporaryRequests[id];
-    }
+    private removeTempRequest = (id: string) => delete this.temporaryRequests[id];
 
     public fetch(url: RequestInfo, requestInit?: RequestInit) {
         const init = { ...this.init, ...requestInit };
@@ -59,48 +49,46 @@ class Fetcher {
     public handleRequestAction(
         dispatch: any,
         options: IRequestActionOptions,
-        surviveTransition: boolean = false,  // svaki request ce biti ubijen na promjenu rute
-        requestId: string = guidGen.v4()   // ako se ne preda izvana id, fetcher sam dodjeli jedan
+        surviveTransition: boolean = false,
+        requestId: string = guidGen.v4()
     ): Promise<any> {
         options = { ...defaultRequestActionOptions, ...options };
         const init = { ...this.init, ...options.requestInit };
 
         this.allRequests[requestId] = false;
 
-        // za sve koje ne zelimo da prezive tranziciju staviti u poseban dictionary
         if (!surviveTransition) {
             this.temporaryRequests[requestId] = false;
         }
 
+        const requestAction = `${options.actionName}_REQUEST`;
+        const responseAction = `${options.actionName}_RESPONSE`;
+        const errorAction = `${options.actionName}_ERROR`;
+
         dispatch({
-            type: options.requestActionName,
-            payload: options.requestActionPayload
+            type: requestAction,
+            payload: options.actionPayload
         });
 
         const successResolver = (response: Response): Promise<any> => {
             if (response.ok) {
-                if (options.jsonResponseExpected) {
-                    return response.json().then(jsonResponse => {
-                        dispatch({
-                            type: options.responseActionName,
-                            payload: options.responsePayloadMapper(jsonResponse)
-                        });
-                        return Promise.resolve(jsonResponse);
-                    });
-                } else {
-                    dispatch({
-                        type: options.responseActionName,
-                        payload: null
-                    });
-                    return Promise.resolve();
-                }
+                let responsePayload = null;
+
+                response.json().then(jsonResponse => responsePayload = jsonResponse).catch(err => responsePayload = null);
+
+                dispatch({
+                    type: responseAction,
+                    payload: options.responsePayloadMapper(responsePayload)
+                });
+
+                return Promise.resolve(responsePayload);
             } else {
                 let payload = { status: response.status, body: null };
-                return response.json().then(errorResponse => {
-                    payload = { ...payload, body: errorResponse };
-                }).then(resp => {
-                    return Promise.reject(payload);
-                }).catch(err => Promise.reject(payload));
+                return (
+                    response.json()
+                        .then(errorResponse => payload = { ...payload, body: errorResponse })
+                        .then(resp => Promise.reject(payload)).catch(err => Promise.reject(payload))
+                );
             }
         };
 
@@ -112,21 +100,22 @@ class Fetcher {
             const payload = error.status !== undefined && error.body !== undefined && error || null;
 
             dispatch({
-                type: options.errorActionName,
+                type: errorAction,
                 payload: options.errorPayloadMapper(payload)
             });
             return Promise.reject(error);
         };
 
-        // za sad kad se desi error to ne hvatamo, ignoriramo ga
-        return fetch(options.requestUrl, init)
-            .then(resp => {
-                const continuator = this.shouldIgnoreResponse(requestId);
-                this.removeRequest(requestId);
-                return continuator(resp);
-            })
-            .then(successResolver)
-            .catch(errorResolver);
+        return (
+            fetch(options.url, init)
+                .then(resp => {
+                    const continuator = this.shouldIgnoreResponse(requestId);
+                    this.removeRequest(requestId);
+                    return continuator(resp);
+                })
+                .then(successResolver)
+                .catch(errorResolver)
+        );
     }
 }
 
