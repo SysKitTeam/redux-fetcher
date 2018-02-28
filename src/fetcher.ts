@@ -11,7 +11,7 @@ const defaultRequestActionOptions: IRequestActionOptions = {
     errorPayloadMapper: error => error
 };
 
-class Fetcher {
+export class Fetcher {
     private readonly init: RequestInit = {
         mode: 'cors',
         credentials: 'include',
@@ -43,7 +43,7 @@ class Fetcher {
 
     public fetch(url: RequestInfo, requestInit?: RequestInit) {
         const init = { ...this.init, ...requestInit };
-        return fetch(url, init);
+        return window.fetch(url, init);
     }
 
     public handleRequestAction(
@@ -107,7 +107,7 @@ class Fetcher {
         };
 
         return (
-            fetch(options.url, init)
+            window.fetch(options.url, init)
                 .then(resp => {
                     const continuator = this.shouldIgnoreResponse(requestId);
                     this.removeRequest(requestId);
@@ -119,6 +119,4 @@ class Fetcher {
     }
 }
 
-const fetcher = new Fetcher();
-
-export default fetcher;
+export const fetcher = new Fetcher();

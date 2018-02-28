@@ -2,13 +2,34 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2015",
-        "sourceMap": true
+        "jsx": "react",
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "sourceMap": false,
+        "inlineSourceMap": true,
+        "noEmitHelpers": true,
+        "outDir": "./lib",
+        "declaration": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
+    "filesGlob": [
+        "typings/index.d.ts",
+        "typings/globals/**/*.d.ts",
+        "src/**/**/*.ts",
+        "src/**/**/*.tsx"
+    ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "lib"
     ],
     "include": [
-        "src/*"
+        "src/*.ts"
     ],
-    "compileOnSave": true
+    "compileOnSave": false,
+    "buildOnSave": false
 }
