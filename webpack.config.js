@@ -1,35 +1,21 @@
 const path = require('path');
 
 module.exports = {
-    entry: {
-        src: './src/index.ts',
-        test: './src/fetcher.spec.ts',
-        babel: './lib/fetcher.spec.js'
-    },
-
-    // entry: {
-    //     source: './src/index.ts',
-    //     tests: './test/fetcher.spec.ts'
+    // entry: './src/index.ts',
+    // output: {
+    //     path: path.join(__dirname, '/lib'),
+    //     filename: 'bundle.js',
     // },
-    output: {
-        path: path.join(__dirname, '/dist'),
-        filename: '[name].js',
-    },
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                loader: 'ts-loader',
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
+                loader: 'awesome-typescript-loader',
                 exclude: /node_modules/
             }
         ]
     },
     resolve: {
-        extensions: [".tsx", ".ts", ".js"]
+        extensions: ['.ts', '.js']
     }
 }

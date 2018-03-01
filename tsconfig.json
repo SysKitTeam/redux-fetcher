@@ -1,13 +1,12 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es2015",
-        "jsx": "react",
+        "target": "es6",
         "skipLibCheck": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "noImplicitAny": false,
-        "removeComments": false,
+        "removeComments": true,
         "sourceMap": false,
         "inlineSourceMap": true,
         "noEmitHelpers": true,
