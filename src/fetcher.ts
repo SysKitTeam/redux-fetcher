@@ -43,7 +43,7 @@ export class Fetcher {
 
     public fetch(url: RequestInfo, requestInit?: RequestInit) {
         const init = { ...this.init, ...requestInit };
-        return window.fetch(url, init);
+        return fetch(url, init);
     }
 
     public handleRequestAction(
@@ -107,7 +107,7 @@ export class Fetcher {
         };
 
         return (
-            window.fetch(options.url, init)
+            fetch(options.url, init)
                 .then(resp => {
                     const continuator = this.shouldIgnoreResponse(requestId);
                     this.removeRequest(requestId);

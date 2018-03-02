@@ -4,32 +4,25 @@ module.exports = function (config) {
     config.set({
         basePath: '',
         frameworks: ['jasmine'],
-        plugins: [
-            'karma-webpack',
-            'karma-jasmine',
-            'karma-chrome-launcher'
-        ],
         files: [
-            "./test/*.spec.ts",
-            "./src/*.ts"
+            "../test/**/*_spec.ts"
         ],
         exclude: [
         ],
         preprocessors: {
-            "./test/*.spec.ts": ['webpack'],
-            "./src/*.ts": ['webpack']
+            "../test/**/*_spec.ts": ['webpack']
         },
-        reporters: ['progress'],
+        reporters: ['progress', 'coverage'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
-        autoWatch: false,
+        autoWatch: true,
         browsers: ['Chrome'],
-        singleRun: false,
+        singleRun: true,
         concurrency: Infinity,
         webpack: webpackConfig,
-        webpackServer: {
-            noInfo: false
+        mime: {
+            'text/x-typescript': ['ts']
         }
     })
 }

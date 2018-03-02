@@ -1,0 +1,31 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Fetcher</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <script>
+        function buttonClicked(ev) {
+            console.log('button clicked!', ev.currentTarget)
+        }
+        $(document).ready(function () {
+            var button = $('')
+        });
+    </script>
+</head>
+
+<body>
+    <script src="dist/test.js"></script>
+    <button class="btn">Click me!</button>
+    <div>Response body:</div>
+    <hr/>
+    <div class="body_container" />
+</body>
+
+</html>
