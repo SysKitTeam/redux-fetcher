@@ -1,101 +1,51 @@
 import 'isomorphic-fetch';
+import * as helpers from './helpers';
 import * as sinon from 'sinon';
 import { fetcher } from '../src/fetcher';
 
-const _fetch = (url: string) => {
-    const res = new Response('{"message": hello"}', {
-        status: 200,
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-
-    return Promise.resolve(res);
-}
-
-let _fetcher_backup = window.fetch;
-
-describe('fetcher tests', () => {
-    // beforeAll(() => {
-    //     if (!window) {
-    //         var window: any = {};
-    //         window.fetch = _fetch;
-    //     } else if (!(window as Window).fetch) {
-    //         (window as Window).fetch = _fetch;
-    //     } else {
-    //         // _fetcher_backup = (window as Window).fetch;
-    //         (window as Window).fetch = _fetch;
-    //     }
-    // });
-
-    // afterAll
-
-    // beforeEach(() => {
-    //     sinon.stub(window, 'fetch');
-    // })
-
-    // afterEach(() => {
-    //     (window as any).fetch.restore();
-    // })
+describe('.fetch', () => {
+    let stubedFetch;
 
     beforeEach(() => {
-        if (!window) {
-            var window: any = {};
-            window.fetch = _fetch;
-        } else if (!(window as Window).fetch) {
-            (window as Window).fetch = _fetch;
-        } else {
-            // _fetcher_backup = (window as Window).fetch;
-            (window as Window).fetch = _fetch;
-        }
+        stubedFetch = sinon.stub(window, 'fetch');
+        console.log(stubedFetch);
     });
 
-    // afterEach(() => {
-    //     window.fetch = _fetcher_backup;
-    // });
+    afterEach(() => {
+        (window as any).fetch.restore();
+    });
 
-    it('gives right response', () => {
-        fetcher.fetch('/foobar').then(resp => {
-            resp.json().then(jsonResp => {
-                expect(jsonResp).toBe('bla')
+    it('formats response correctly', () => {
+        console.log('stubed fetch: ', stubedFetch);
+
+        const res = new Response('{"hello":"world"}', {
+            status: 200,
+            headers: {
+                'Content-type': 'application/json'
+            }
+        });
+
+        stubedFetch.returns(Promise.resolve(res));
+
+        fetcher.fetch('/foobar')
+            .then(resp => resp.json())
+            .then(jsonResp => {
+                console.log(jsonResp);
+                expect(jsonResp.hello).toBe('world');
             });
-        })
     });
 
-    // it('formats response correctly', () => {
-    //     fetcher.fetch('/foobar').then(resp => expect(resp.status).toBe(200));
-    // });
+    it('displays error', () => {
+        stubedFetch.returns(helpers.jsonError(500, {
+            exception: 'An exception occured'
+        }));
 
-    // describe('stubbing response', () => {
-    //     const res = new Response('{"message": hello"}', {
-    //         status: 200,
-    //         headers: {
-    //             'Content-type': 'application/json'
-    //         }
-    //     });
-
-    //     (window as any).fetch.returns(Promise.resolve(res));
-    // });
-
-    // it('formats response correctly', () =>
-    //     fetcher.fetch('/foobar')
-    //         .then((response) => expect(response.status).toBe(200)));
-
-
-
-    // describe('fetcher', () => {
-    //     it('formats response correctly', () => {
-    //         fetcher.fetch('/foobar').then(resp => expect(resp.status).toBe(200));
-    //     });
-
-    //     it('gives right response', () => {
-    //         fetcher.fetch('/foobar').then(resp => {
-    //             resp.json().then(jsonResp => {
-    //                 expect(jsonResp).toBe({
-    //                     message: 'Hello'
-    //                 })
-    //             });
-    //         })
-    //     });
-    // })
+        fetcher.fetch('/foobar').then(resp => {
+            console.log(resp.status);
+            expect(resp.status).toBe(500);
+            return resp.json();
+        }).then(json => {
+            console.log('error: ', json);
+        });
+    });
 });

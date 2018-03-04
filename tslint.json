@@ -42,10 +42,6 @@
         "interface-over-type-literal": false,
         "jsdoc-format": false,
         "label-position": true,
-        // "linebreak-style": [
-        //   true,
-        //   "LF"
-        // ],
         "max-classes-per-file": [
             false
         ],

@@ -5,20 +5,22 @@ module.exports = function (config) {
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-            "../test/**/*_spec.ts"
+            "./test/**/*_spec.ts",
+            "./src/**/*.ts"
         ],
         exclude: [
         ],
         preprocessors: {
-            "../test/**/*_spec.ts": ['webpack']
+            "./test/**/*_spec.ts": ['webpack'],
+            "./src/**/*.ts": ['webpack']
         },
-        reporters: ['progress', 'coverage'],
+        reporters: ['progress'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['Chrome'],
-        singleRun: true,
+        singleRun: false,
         concurrency: Infinity,
         webpack: webpackConfig,
         mime: {

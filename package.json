@@ -5,9 +5,9 @@
     "main": "./lib/index.js",
     "typings": "./lib/index.d.ts",
     "scripts": {
-        "test": "karma start ./config/karma.conf.js",
+        "test": "karma start ./karma.conf.js",
         "build": "gulp build",
-        "wp": "webpack --config ./config/webpack.config.js"
+        "wp": "webpack --config ./webpack.config.js"
     },
     "author": "SysKit",
     "license": "MIT",
@@ -31,6 +31,7 @@
         "@types/chai": "^4.1.2",
         "@types/jasmine": "^2.8.6",
         "@types/sinon": "^4.3.0",
+        "@types/uuid": "^3.4.3",
         "awesome-typescript-loader": "^3.5.0",
         "chai": "^4.1.2",
         "gulp": "^3.9.1",
@@ -49,6 +50,7 @@
         "karma-phantomjs-launcher": "^1.0.4",
         "karma-remap-istanbul": "^0.6.0",
         "karma-sinon": "^1.0.5",
+        "karma-sinon-stub-promise": "^1.0.0",
         "karma-sourcemap-loader": "^0.3.7",
         "karma-sourcemap-writer": "^0.1.2",
         "karma-typescript": "^3.0.12",
@@ -57,6 +59,9 @@
         "mocha": "^5.0.1",
         "run-sequence": "^2.2.1",
         "sinon": "^4.4.2",
+        "tslint": "^5.9.1",
+        "tslint-loader": "^3.6.0",
+        "tslint-misc-rules": "^3.3.1",
         "typescript": "^2.7.2",
         "webpack": "3.11.0"
     }

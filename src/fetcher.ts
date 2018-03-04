@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-import guidGen = require('uuid');
+import { v4 } from 'uuid';
 import { IApiErrorResponse, Dictionary, Continuator, IRequestActionOptions } from './models';
 import { ignoreContinuator, allowContinuator } from './continuator';
 
@@ -50,7 +50,7 @@ export class Fetcher {
         dispatch: any,
         options: IRequestActionOptions,
         surviveTransition: boolean = false,
-        requestId: string = guidGen.v4()
+        requestId: string = v4()
     ): Promise<any> {
         options = { ...defaultRequestActionOptions, ...options };
         const init = { ...this.init, ...options.requestInit };

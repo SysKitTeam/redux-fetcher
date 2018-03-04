@@ -4,3 +4,4 @@ tsconfig.json
 tslint.json
 webpack.config.js
 karma.config.js
+yarn-error.log
